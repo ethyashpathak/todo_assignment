@@ -23,7 +23,8 @@ public class App {
             System.out.println("1. Add task");
             System.out.println("2. Delete task");
             System.out.println("3. Show tasks");
-            System.out.println("4. Exit");
+            System.out.println("4. Mark task as completed");
+            System.out.println("5. Exit");
             
             String choice=sc.next();
             sc.nextLine();
@@ -33,25 +34,29 @@ public class App {
                     System.out.println("Enter a task to add");
                     String task=sc.nextLine();
                     al.add(task);
+                    saveTasks(al);
                     break;
                 case "2":
                  if (al.isEmpty()) {
-                        System.out.println("List is empty, nothing to delete.");
-                    } else {
-                        System.out.println("Enter the task number to delete (e.g., 1, 2...):");
-                        int taskNumber = sc.nextInt();
-                        sc.nextLine(); 
-                        
-                        if (taskNumber > 0 && taskNumber <= al.size()) {
-                            String removedTask = al.remove(taskNumber - 1); 
-                            System.out.println("'" + removedTask + "' deleted successfully.");
-                            
-                           
-                            saveTasks(al);
-                        } else {
-                            System.out.println("Invalid task number.");
-                        }
-                    }
+                 System.out.println("List is empty, nothing to delete.");
+                   } else {
+                       try { 
+                           System.out.println("Enter the task number to delete (e.g., 1, 2...):");
+                           int taskNumber = sc.nextInt();
+                           sc.nextLine(); 
+
+                           if (taskNumber > 0 && taskNumber <= al.size()) {
+                               String removedTask = al.remove(taskNumber - 1);
+                               System.out.println("'" + removedTask + "' deleted successfully.");
+                               saveTasks(al);
+                           } else {
+                               System.out.println("Invalid task number.");
+                           }
+                       } catch (java.util.InputMismatchException e) { 
+                           System.out.println("Error: Please enter a valid number.");
+                           sc.nextLine(); 
+                       }
+                   }
                     break;
                case "3": 
                     if (al.isEmpty()) {
@@ -65,8 +70,32 @@ public class App {
                     break;
                    
                 case "4":
+                  if (al.isEmpty()) {
+                      System.out.println("No tasks available to mark.");
+                  } else {
+                      System.out.println("Enter the task number to mark as completed:");
+                      int taskNumber = sc.nextInt();
+                      sc.nextLine();
+
+                      if (taskNumber > 0 && taskNumber <= al.size()) {
+                          String currentTask = al.get(taskNumber - 1);
+
+                          if (currentTask.startsWith("[✔]")) {
+                              System.out.println("Task is already marked as completed.");
+                          } else {
+                              al.set(taskNumber - 1, "[✔] " + currentTask);
+                              System.out.println(" Task marked as completed!");
+                              saveTasks(al);
+                          }
+                      } else {
+                          System.out.println("Invalid task number.");
+                      }
+                  }
+                  break;
+                  case "5":
+                    saveTasks(al);
                     cont = false;
-                    System.out.println("Exiting application. Goodbye!");
+                    System.out.println(" Tasks saved. Exiting application. Goodbye!");
                     break;
                 default:
                     System.out.println("invalid choice");
